@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: studens-money
+
+  datasource:
+    url: ${DATABASE_URL}
+  sql:
+    init:
+      platform: ${DATABASE_PLATFORM}
+      mode: always
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.vault: DEBUG
