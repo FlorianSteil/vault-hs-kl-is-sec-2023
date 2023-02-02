@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17
 EXPOSE 8080
-COPY --from=build /build-project/target/hello-vault-spring.jar /app.jar
+COPY --from=build /build-project/target/studens-money.jar /app.jar
 ENTRYPOINT ["java","-jar", "/app.jar"]
 
 HEALTHCHECK \

@@ -7,7 +7,7 @@ services:
       VAULT_ADDRESS: http://vault-server:8200
       VAULT_APPROLE_ROLE_ID: demo-web-app
       VAULT_APPROLE_SECRET_ID_FILE: /tmp/secret
-      VAULT_DATABASE_CREDENTIALS_PATH: creds/dev-readonly
+      VAULT_DATABASE_CREDENTIALS_PATH: creds/dev-dbaccess
       VAULT_KV2_MOUNT: kv-v2
       VAULT_API_KEY_PATH: api-key
       VAULT_API_KEY_FIELD: api-key-field

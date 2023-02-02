@@ -11,7 +11,7 @@
     <groupId>com.hashicorp</groupId>
     <artifactId>studens-money</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>hello-vault-spring</name>
+    <name>studens-money</name>
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2021.0.2</spring-cloud.version>
@@ -76,7 +76,7 @@
     </dependencyManagement>
 
     <build>
-        <finalName>hello-vault-spring</finalName>
+        <finalName>studens-money</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

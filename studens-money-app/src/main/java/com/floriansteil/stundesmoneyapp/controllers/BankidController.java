@@ -24,7 +24,7 @@ public class BankidController {
     private final String secureServiceAddress = System.getenv("SECURE_SERVICE_ADDRESS");
     private final String kvMountPath          = System.getenv("VAULT_KV2_MOUNT");
     private final String apiKeyPath           = System.getenv("VAULT_API_KEY_PATH");
-    private final String apiKeyField          = System.getenv("VAULT_API_KEY_FIELD");
+    private final String apiKeyField          = "ckey";//System.getenv("VAULT_API_KEY_FIELD");
     @Autowired
     private BankidTable table;
     @Autowired

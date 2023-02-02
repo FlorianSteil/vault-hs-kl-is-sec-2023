@@ -72,10 +72,9 @@ vault token create \
 # ref: https://www.vaultproject.io/docs/secrets/kv/kv-v2
 vault secrets enable -path=kv-v2 kv-v2
 
-# seed the kv-v2 store with an entry our web app will use
-vault kv put "${API_KEY_PATH}" "${API_KEY_FIELD}=my-secret-key"
+# seed the kv-v2 store with an entry our web app will use for Secure Server access and decrypt/ encrypt Data
+vault kv put "${API_KEY_PATH}" "${API_KEY_FIELD}=my-secret-key" "ckey=abc1234"
 
-vault kv put secret/crypto ckey=abc1234
 
 #####################################
 ########## DYNAMIC SECRETS ##########
@@ -89,7 +88,7 @@ vault secrets enable database
 # ref: https://www.vaultproject.io/api/secret/databases/postgresql
 vault write database/config/my-postgresql-database \
     plugin_name=postgresql-database-plugin \
-    allowed_roles="dev-readonly" \
+    allowed_roles="dev-dbaccess" \
     connection_url="postgresql://{{username}}:{{password}}@${DATABASE_HOSTNAME}:${DATABASE_PORT}/postgres?sslmode=disable" \
     username="vault_db_user" \
     password="vault_db_password"
@@ -97,10 +96,10 @@ vault write database/config/my-postgresql-database \
 # rotate the password for 'vault_db_user', ensures the user is only accessible by Vault itself
 vault write -force database/config/my-postgresql-database
 
-# allow Vault to create roles dynamically with the same privileges as the 'dev-readonly' role created in our database's init scripts
-vault write database/roles/dev-readonly  \
+# allow Vault to create roles dynamically with the same privileges as the 'dev-dbaccess' role created in our database's init scripts
+vault write database/roles/dev-dbaccess  \
     db_name=my-postgresql-database \
-    creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT readonly TO \"{{name}}\";" \
+    creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT dbaccess TO \"{{name}}\";" \
     default_ttl="1m" \
     max_ttl="768h" # low ttl to demonstrate token renewal, high max_ttl to keep credentials
 

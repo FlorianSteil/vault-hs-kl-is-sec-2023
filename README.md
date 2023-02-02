@@ -1,14 +1,15 @@
-# Vault Sample Application -> Students Money
+# Vault Sample Application -> Studens Money
 
 Dies ist eine Beispielanwendung, die verschiedene Aspekte der Interaktion mit HashiCorp Vault demonstriert, darunter:
 
 - AppRole authentication mit einem response-wrapping token
 - Lesen von static secret von kv-v2 secrets engine
-- Lesen a dynamic secret von PostgreSQL database secrets engine
+- Lesen von dynamic secret mit PostgreSQL database secrets engine
 - Authentication token lease renewal
 - Database credentials lease renewal
+- Verschlüsseln von Daten mit einem in der kv-v2 secrets engine gespeicherten Schlüssels
 
-## Prerequisites
+## Voraussetzungen
 
 1. docker
 1. docker-compose
@@ -101,7 +102,7 @@ curl -s -X GET http://localhost:8080/studens | jq
 ]
 ```
 
-### 6. Verschlüsseln/Entschlüsseln von Daten nach dem Schreiben & Lesen aus der Datenbank
+### 6. Test `GET /bankid / POST /bankid` Verschlüsseln/Entschlüsseln von Daten nach dem Schreiben & Lesen aus der Datenbank
 
 Der Service funktioniert wie in Punkt 3 erläutern, nur dass zusätzlich das IBAN-Feld beim Schreiben in die Datenbank verschlüsselt wird und nach dem Lesen aus der Datenbank entschlüsselt werd, mit einem Schlüssel, der in Vault gespeichert wurde.
 
@@ -148,14 +149,28 @@ docker logs studens-money-app-app-1 2>&1 | grep "database/creds/dev-readonly"
 2022-02-02 21:16:35.771 DEBUG 1 --- [TaskScheduler-1] cretLeaseContainer$LeaseRenewalScheduler : Scheduling renewal for secret database/creds/readonly  with lease database/creds/readonly /59mGm1fahgzPLo2hBiA3GRtM, lease duration 60
 ```
 
+### 6. Stoppe die Anwendung
 
+```shell-session
+./stop.sh
+```
+```
+[+] Running 6/6
+ ⠿ Container studens-money-app-healthy-1               Stopped                                                                                                                                          0.0s
+ ⠿ Container studens-money-app-app-1                   Stopped                                                                                                                                          0.0s
+ ⠿ Container studens-money-app-trusted-orchestrator-1  Stopped                                                                                                                                          0.1s
+ ⠿ Container studens-money-app-secure-service-1        Stopped                                                                                                                                          0.1s
+ ⠿ Container studens-money-app-vault-server-1          Stopped                                                                                                                                          0.1s
+ ⠿ Container studens-money-app-database-1              Stopped                                                                                                                                          0.2s
+
+```
 ## Stack Design
 
 ### API
 
 | Endpoint                     | Description                                                                                                                                                                   |
 |------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **POST** `/secureservertest` | Ein Beispeil zur nutzung von Vault static secrets.                                                                                                                            |
+| **POST** `/secureservertest` | Ein Beispiel zur nutzung von Vault static secrets.                                                                                                                            |
 | **GET** `/studens`           | Ein Beispiel zu nutzung von  Vault dynamic secrets.                                                                                                                           |
 | **GET** `/bankid`            | Ein Beispiel zu nutzung von  Vault dynamic secrets und der Entschlüsselung von einer IBAN mit der Hilfe von einem Schlüssel der als static secret in Vault gespeichert wurde. |
 | **Post** `/bankid`           | Ein Beispiel zu nutzung von  Vault dynamic secrets und der Verschlüsselung von einer IBAN mit der Hilfe von einem Schlüssel der als static secret in Vault gespeichert wurde. |
@@ -163,6 +178,6 @@ docker logs studens-money-app-app-1 2>&1 | grep "database/creds/dev-readonly"
 
 ### Docker Compose Architecture
 
-![Architecture overview of the docker-compose setup. Our Spring service authenticates with a Vault dev instance using a token provided by a Trusted Orchestrator. It then fetches an api key from Vault to communicate with a Secure Service. It also connects to a PostgreSQL database using Vault-provided credentials.](images/arch-overview.svg)
+![](images/Arch_Map.png)
 
 
